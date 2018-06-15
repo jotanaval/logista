@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Manutenções</ui:define>
+    <ui:define name="corpo">
+
+
+        <h:form id="frmManu">
+                 <fieldset><legend>Administração de Manutenção</legend>
+                     
+            <p:separator/>
+            <fieldset><legend>Cadastro</legend>
+            <h:panelGrid columns="2">
+                
+                <p:outputLabel value="Ano" for="o" />
+                <p:inputMask id="ano"  value="#{manutencaoBean.manutencao.ano}" mask = "9999"/>
+                
+             
+             <p:outputLabel value="nº do PS"/>
+             <p:inputText value="#{manutencaoBean.manutencao.NPS}" />
+             <p:outputLabel value="PM"/>
+             <p:selectOneMenu value="#{manutencaoBean.manutencao.pm}">
+                 <f:selectItem itemValue="PMI" itemLabel="PMI" />
+                 <f:selectItem itemValue="PMG" itemLabel="PMG" />
+                 <f:selectItem itemValue="PME" itemLabel="PME" />
+             </p:selectOneMenu>
+             <p:outputLabel value="Mês"/>
+             <p:selectOneMenu value="#{manutencaoBean.manutencao.mes}">
+                 <f:selectItem itemValue="JAN" itemLabel="JAN" />
+                 <f:selectItem itemValue="FEV" itemLabel="FEV" />
+                 <f:selectItem itemValue="MAR" itemLabel="MAR" />
+                 <f:selectItem itemValue="ABR" itemLabel="ABR" />
+                 <f:selectItem itemValue="MAI" itemLabel="MAI" />
+                 <f:selectItem itemValue="JUN" itemLabel="JUN" />
+                 <f:selectItem itemValue="JUL" itemLabel="JUL" />
+                 <f:selectItem itemValue="AGO" itemLabel="AGO" />
+                 <f:selectItem itemValue="SET" itemLabel="SET" />
+                 <f:selectItem itemValue="OUT" itemLabel="OUT" />
+                 <f:selectItem itemValue="NOV" itemLabel="NOV" />
+                 <f:selectItem itemValue="DEZ" itemLabel="DEZ" />
+                 
+             </p:selectOneMenu>
+                         
+                <p:outputLabel value="Orçamento" for="o" />
+                <p:inputText id="o" 
+                             value="#{manutencaoBean.manutencao.orcamento}" />
+
+                <p:outputLabel value="Apresentação" />
+                <p:calendar id="dataInicio"
+                            value="#{manutencaoBean.manutencao.apresentacao}"
+                            pattern="dd/MM/yyyy" />
+
+                <p:outputLabel value="Prontificação" />
+                <p:calendar id="dataTermino"
+                            value="#{manutencaoBean.manutencao.dataPrintificacao}"
+                            pattern="dd/MM/yyyy" />
+                
+                <p:outputLabel value="Satisfeito" for="s" />
+                <p:inputText id="s" 
+                             value="#{manutencaoBean.manutencao.satisfeito}" />
+                
+                <p:outputLabel value="Garantia" />
+                <p:calendar id="dataGarantia"
+                            value="#{manutencaoBean.manutencao.garantia}"
+                            pattern="dd/MM/yyyy" />
+                
+                <p:outputLabel value="Observação" for="ob" />
+                <p:inputTextarea id="ob"  value="#{manutencaoBean.manutencao.observacao}" autoResize="true" cols="40"/>
+                
+
+                <h:inputHidden value="#{manutencaoBean.manutencao.id}" />
+
+            </h:panelGrid>
+                   <h:commandButton action="#{manutencaoBean.save()}"   value="Salvar"  />    
+                   
+             </fieldset>
+             </fieldset>
+            
+                     
+                          
+           </h:form>
+                     
+       
+
+    </ui:define>
+</ui:composition>

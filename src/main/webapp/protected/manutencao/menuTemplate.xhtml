@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+   
+        
+    <form id="novo">
+             <p:toolbar rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}">
+                <f:facet name="left">                    
+                    <p:commandButton value="Novo" 
+                                     action="#{manutencaoBean.novaManutencao()}"
+                                     oncomplete="PF('cadastro-dialog').show();" 
+                                     icon="ui-icon-document"
+                                     process="@this" 
+                                     update="frmManu:dialog-painel ">                 
+                 <p:resetInput target="frmManu:dialog-painel" />                          
+             </p:commandButton>                            
+                 
+                    
+                     <span class="ui-separator">
+                     <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                     </span> 
+                     <p:commandButton  
+                         value="Em Andamento" 
+                         action="ManutencaoAndamento?faces-redirect=true" />
+                      <p:commandButton 
+                          value="Prontificadas" 
+                          action="prontificadas?faces-redirect=true" />
+                      <!--
+                      <span class="ui-separator">
+                      <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                      </span>  
+                       <p:commandButton 
+                           value="Metas Fisicas" 
+                           action="metasFisicas?faces-redirect=true" />
+                        <span class="ui-separator">
+                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                       </span> 
+                       <p:commandButton 
+                           value="Relatórios" 
+                           action="relatorios?faces-redirect=true" />
+                      -->
+                       <span class="ui-separator">
+                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                       </span> 
+                       <p:commandButton 
+                           value="Itens " 
+                           action="item?faces-redirect=true" 
+                           icon="ui-icon-contact" />
+                                                      
+                </f:facet>
+
+            </p:toolbar>
+            </form>                          
+</ui:composition>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<ui:define name="Titulo">Gerenciamento e Controle de Viaturas</ui:define>
+	<ui:define name="corpo">
+            <h:form>
+            <fieldset><legend>Cadastrar Viaturas</legend>
+                    <p:panelGrid columns="2">
+                        <h:outputLabel value="CFN :"/>
+                        <h:inputText value="#{viaturaBean.viatura.cfn}"/>
+
+                        <h:outputLabel value="Moldelo"/>
+                        <h:selectOneMenu value="#{viaturaBean.modeloID}">
+                            <f:selectItems value="#{modeloBean.modelos}" var="modelo" itemValue="#{modelo.id}" itemLabel="#{modelo.modelo}"/>
+                        </h:selectOneMenu>
+                        <p:outputLabel value="OM: " for="om" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.om}" id="om">
+                            <f:selectItem itemValue="DivAnf" itemLabel="DivAnf" />
+                            <f:selectItem itemValue="CDD" itemLabel="CDD" />
+                            <f:selectItem itemValue="CIASC" itemLabel="CIASC" />
+                            <f:selectItem itemValue="BFNIG" itemLabel="BFNIG" />
+                            <f:selectItem itemValue="CMM" itemLabel="CMM" />
+                            <f:selectItem itemValue="1ºBTL" itemLabel="1ºBTL" />
+                            <f:selectItem itemValue="2ºBTL" itemLabel="2ºBTL" />
+                            <f:selectItem itemValue="3ºBTL" itemLabel="3ºBTL" />
+                            <f:selectItem itemValue="BTLART" itemLabel="BTLART" />
+                            <f:selectItem itemValue="BATDAA" itemLabel="BATDAA" />
+                            <f:selectItem itemValue="BTLCMC" itemLabel="BTLCMC" />
+                            <f:selectItem itemValue="BATBLI" itemLabel="BATBLI" />
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Situação" for="sit" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.situacao}" id="sit">
+                            <f:selectItem itemValue="Disponivel" itemLabel="Disponivel" />
+                            <f:selectItem itemValue="Indisponivel" itemLabel="Indisponivel" />
+                            <f:selectItem itemValue="LVAD" itemLabel="LVAD" />
+                            
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Escalação: " for="esc" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.escalacao}" id="esc">
+                            <f:selectItem itemValue="Nenhuma" itemLabel="Nenhuma" />
+                            <f:selectItem itemValue="UAnf" itemLabel="UAnf" />
+                            <f:selectItem itemValue="Manobra" itemLabel="Manobra" />
+                            <f:selectItem itemValue="Emprestimo" itemLabel="Emprestimo" />
+                            <f:selectItem itemValue="Exterior" itemLabel="Exterior" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="FER: " for="fer" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.fer}" id="fer">
+                            <f:selectItem itemValue="sim" itemLabel="sim" />
+                            <f:selectItem itemValue="não" itemLabel="não" />
+                        </p:selectOneMenu>
+                        <h:inputHidden value="#{viaturaBean.viatura.id}" />
+                    </p:panelGrid>
+
+                    <p:commandButton action="#{viaturaBean.save()}" label="Salvar"  value="Salvar" />                
+                </fieldset>
+		</h:form>
+	</ui:define>
+</ui:composition>

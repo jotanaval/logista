@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Manutenções</ui:define>
+    <ui:define name="corpo">
+
+        <h:form id="frmManu">
+            <p:growl id="pgrowl"/>
+<!-- ================================ MENU DO SISTEMA =============================== -->    
+<p:toolbar id="toolbar" rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}" >
+                <f:facet name="left">                    
+                    <p:commandButton value="Novo" 
+                                     action="#{manutencaoBean.novaManutencao()}"
+                                     oncomplete="PF('cadastro-dialog').show();" 
+                                     icon="ui-icon-document"
+                                     process="@this" 
+                                     update="frmManu:dialog-painel ">                 
+                 <p:resetInput target="frmManu:dialog-painel" />   
+                 
+             </p:commandButton>
+                     <p:commandButton  title="Editar"
+                              process="@this"
+                              icon="ui-icon-pencil" 
+                              update="frmManu:dialog-painel "
+                              disabled="#{manutencaoBean.manuSelecvionada ==null}"
+                              oncomplete="PF('cadastro-dialog').show();" >                
+                <f:setPropertyActionListener 
+                                             value="#{manutencaoBean.manuSelecvionada}"
+                                             target="#{manutencaoBean.manutencao}" />                
+                     <p:resetInput target="frmManu:dialog-painel" />   
+              </p:commandButton> 
+                     <p:commandButton title="Excluir" icon="ui-icon-trash"
+                                   process="@this"
+                                   update="tabela-vtr frmManu:toolbar"
+                                   action="#{manutencaoBean.excluir()}"
+                                   disabled="#{manutencaoBean.manuSelecvionada ==null}" 
+                                   >
+                         <f:setPropertyActionListener 
+                                             value="#{manutencaoBean.manuSelecvionada}"
+                                             target="#{manutencaoBean.manutencao}" /> 
+                      <p:confirm icon="ui-icon-alert" 
+                                   header="Confirmação de Exclusão"
+                                   message="Tem certeza que deseja excluir Manutenção ? "/>
+                      
+                      </p:commandButton>
+                 
+                    
+                     <span class="ui-separator">
+                     <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                     </span> 
+                     <p:commandButton
+                         process="@this"
+                         value="Em Andamento" 
+                         action="manutencaoA?faces-redirect=true" />
+                      <p:commandButton 
+                          process="@this"
+                          value="Prontificadas" 
+                          action="manutencaoP?faces-redirect=true" />
+                      <!--
+                      <span class="ui-separator">
+                      <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                      </span>  
+                       <p:commandButton 
+                           value="Metas Fisicas" 
+                           action="metasFisicas?faces-redirect=true" />
+                        <span class="ui-separator">
+                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                       </span> 
+                       <p:commandButton 
+                           value="Relatórios" 
+                           action="relatorios?faces-redirect=true" />
+                      -->
+                       <span class="ui-separator">
+                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                       </span> 
+                       <p:commandButton 
+                           process="@this"
+                           value="Itens " 
+                           action="item?faces-redirect=true" 
+                           icon="ui-icon-contact" />
+                                                      
+                </f:facet>
+     </p:toolbar>
+          
+<!-- ================================ TABELA DE DADOS =============================== -->
+                    <p:dataTable var="manutencao" 
+                                 value="#{manutencaoBean.emAndamento}" 
+                                 id="tabela-vtr"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" 
+                                 paginatorPosition="bottom"
+                                 selection="#{manutencaoBean.manuSelecvionada}"
+                                 selectionMode="single"
+                                 rowKey="#{manutencao.id}">
+                        
+                        <p:ajax event="rowSelect"  update=":frmManu:toolbar" />
+                        <p:ajax event="rowUnselect"  update=":frmManu:toolbar"/>
+
+                        <h:inputHidden value="#{manutencao.id}" />
+
+                         <p:column headerText="Ano"   style="text-align: center;" filterBy="#{manutencao.ano}" filterMatchMode="contains">
+                            <h:outputText value="#{manutencao.ano}"> <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" /></h:outputText>
+                        </p:column>
+
+                        <p:column headerText="CFN" width="150"  style="text-align: center; font-style: oblique " filterBy="#{manutencao.viatura.cfn}" filterMatchMode="contains">
+                            <h:outputText value="#{manutencao.viatura.cfn}" />
+                        </p:column>
+                         <p:column headerText="Modelo"   style="text-align: center; font-style: oblique " filterBy="#{manutencao.viatura.modelo.modelo}" filterMatchMode="contains">
+                             <h:outputText value="#{manutencao.viatura.modelo.modelo}" />
+                        </p:column>
+                        <p:column headerText="OM" filterBy="#{manutencao.viatura.om}" filterMatchMode="contains"> 
+                            <h:outputText value="#{manutencao.viatura.om}" />
+                        </p:column>
+
+                        <p:column headerText="Orçamento">
+                            <h:outputText value="#{manutencao.orcamento}" />
+                        </p:column>
+                                                
+                        <p:column headerText="Apresentação" 
+                                  style="text-align: center;">
+                            <h:outputText value="#{manutencao.apresentacao}"> <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" /></h:outputText>
+                        </p:column>
+
+                       
+                            <h:inputHidden value="#{manutencao.dataPrintificacao}"/>  
+                            <h:inputHidden value="#{manutencao.garantia}"/>  
+                            <h:inputHidden value="#{manutencao.satisfeito}" />
+                            
+                            <p:column headerText="Última modificação"  style="text-align: center; " >
+                             Nome : <h:outputText value="#{manutencao.atualizador}" />
+                             <p:separator/>
+                             Data : <h:outputText value="#{manutencao.ultimaAtualizacao}" > <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                             </h:outputText>
+                             
+                             </p:column>
+                       
+
+                        <p:column headerText="Observação"  style="text-align: center; ">
+                            <h:outputText value="#{manutencao.observacao}" />
+                        </p:column>
+
+                    </p:dataTable>
+                 
+<!-- ================================ DIALOG PARA INSERÇAO =============================== -->
+
+<p:dialog header="Cadastro de Item" 
+                             widgetVar="cadastro-dialog"  
+                             resizable="false" 
+                             closeOnEscape="true"
+                             id="dialog-painel"> 
+          <h:panelGrid columns="2" id="painel">
+                
+                <p:outputLabel value="Ano" for="o" />
+                <p:inputMask id="ano"  value="#{manutencaoBean.manutencao.ano}" mask = "9999"/>
+                
+             <h:outputLabel value="CFN da VTR"/>
+                <p:selectOneMenu value="#{manutencaoBean.viaturaID}"  filter="true" filterMatchMode="startsWith">
+                     <f:selectItem itemLabel="Selecione o CFN" itemValue=""/>
+                    <f:selectItems value="#{viaturaBean.ordenadas}" var="viatura" itemValue="#{viatura.id}" itemLabel="#{viatura.cfn}"/>
+                </p:selectOneMenu>
+             <p:outputLabel value="nº do PS"/>
+             <p:inputText value="#{manutencaoBean.manutencao.NPS}" />
+             <p:outputLabel value="PM"/>
+             <p:selectOneMenu value="#{manutencaoBean.manutencao.pm}">
+                 <f:selectItem itemValue="PMI" itemLabel="PMI" />
+                 <f:selectItem itemValue="PMG" itemLabel="PMG" />
+                 <f:selectItem itemValue="PME" itemLabel="PME" />
+             </p:selectOneMenu>
+             <p:outputLabel value="Mês"/>
+             <p:selectOneMenu value="#{manutencaoBean.manutencao.mes}">
+                 <f:selectItem itemValue="JAN" itemLabel="JAN" />
+                 <f:selectItem itemValue="FEV" itemLabel="FEV" />
+                 <f:selectItem itemValue="MAR" itemLabel="MAR" />
+                 <f:selectItem itemValue="ABR" itemLabel="ABR" />
+                 <f:selectItem itemValue="MAI" itemLabel="MAI" />
+                 <f:selectItem itemValue="JUN" itemLabel="JUN" />
+                 <f:selectItem itemValue="JUL" itemLabel="JUL" />
+                 <f:selectItem itemValue="AGO" itemLabel="AGO" />
+                 <f:selectItem itemValue="SET" itemLabel="SET" />
+                 <f:selectItem itemValue="OUT" itemLabel="OUT" />
+                 <f:selectItem itemValue="NOV" itemLabel="NOV" />
+                 <f:selectItem itemValue="DEZ" itemLabel="DEZ" />
+                 
+             </p:selectOneMenu>
+             
+             
+             
+                <p:outputLabel value="Orçamento" for="o" />
+                <p:inputText id="o" 
+                             value="#{manutencaoBean.manutencao.orcamento}" />
+
+                <p:outputLabel value="Apresentação" />
+                <p:calendar id="dataInicio"
+                            value="#{manutencaoBean.manutencao.apresentacao}"
+                            pattern="dd/MM/yyyy" />
+
+                <p:outputLabel value="Prontificação" />
+                <p:calendar id="dataTermino"
+                            value="#{manutencaoBean.manutencao.dataPrintificacao}"
+                            pattern="dd/MM/yyyy" />
+                
+                <p:outputLabel value="Satisfeito" for="s" />
+                <p:inputText id="s" 
+                             value="#{manutencaoBean.manutencao.satisfeito}" />
+                
+                <p:outputLabel value="Garantia" />
+                <p:calendar id="dataGarantia"
+                            value="#{manutencaoBean.manutencao.garantia}"
+                            pattern="dd/MM/yyyy" />
+                
+                <p:outputLabel value="Observação" for="ob" />
+                <p:inputTextarea id="ob"  value="#{manutencaoBean.manutencao.observacao}" autoResize="true" cols="40"/>
+                
+
+                <h:inputHidden value="#{manutencaoBean.manutencao.id}" />
+
+            </h:panelGrid>
+                   <p:commandButton action="#{manutencaoBean.save()}"   
+                                    value="Salvar"
+                                    process="dialog-painel"
+                                    update="pgrowl painel tabela-vtr" 
+                                    oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"/> 
+</p:dialog>
+                 
+<!-- ================================ DIALOG PARA ALTERAÇAO =============================== -->
+        </h:form>
+
+    </ui:define>
+</ui:composition>

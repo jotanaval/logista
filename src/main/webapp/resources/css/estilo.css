@@ -1,0 +1,57 @@
+body, td, th {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    background-color: buttonface;
+    
+}
+
+
+img {
+    border: 0px;
+}
+
+
+#titulo {
+    float: left;
+    font-size: 25pt;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+
+
+
+
+#corpo {
+    margin-top: 50px;
+    margin-bottom: 10px;
+    min-height: 500px;
+   
+}
+
+#footer {
+height:50px;
+margin-top:5px;
+padding:10px;
+text-align:center;
+
+
+}
+.info {
+    font-weight: bold;
+    color: green;
+}
+
+.warn {
+    font-weight: bold;
+    color: #FFCC00;
+}
+
+.fatal, .error {
+    font-weight: bold;
+    color: red;
+}
+
+.column{
+    text-align: center;
+}

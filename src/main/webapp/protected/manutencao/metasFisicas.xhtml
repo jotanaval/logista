@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Manutenções</ui:define>
+    <ui:define name="corpo">
+
+
+        <h:form id="frmManu">
+            
+            <ui:insert>
+                <ui:include src="/protected/manutencao/menuTemplate.xhtml"/>
+            </ui:insert>
+             
+                 <fieldset><legend>Administração de Metas Físicas</legend>
+                     
+            <p:separator/>
+            <fieldset><legend>Cadastro</legend>
+                <h:panelGrid columns="2" id="painel1">
+                
+                <p:outputLabel value="Ano" for="ano" />
+                <p:inputMask id="ano"  value="#{metasBean.metasFisicas.anoMetas}" mask = "9999"/> 
+                
+                <p:outputLabel value="Metas Fisicas" for="mt" />
+                <p:inputText id="mt" 
+                             value="#{metasBean.metasFisicas.mtNome}" />
+                      
+                <p:outputLabel value="QTD" for="qtd" />
+                <p:inputText id="qtd" 
+                             value="#{metasBean.metasFisicas.qtd}" />
+
+                <p:outputLabel value="LVAD" for="lvad" />
+                <p:inputText id="lvad" 
+                             value="#{metasBean.metasFisicas.lvad}" />
+                
+                <p:outputLabel value="Retiradas" for="ret" />
+                <p:inputText id="ret" 
+                             value="#{metasBean.metasFisicas.retiradas}" />
+                
+                
+
+                <h:inputHidden value="#{metasBean.metasFisicas.id}" />
+
+            </h:panelGrid>
+                <h:commandButton action="#{metasBean.salvar()}"   value="Salvar"  />    
+                    </fieldset>  
+            
+            
+            <fieldset><legend>Pesquisar Metas Fisicas</legend>
+            
+                <p:dataTable var="mt" value="#{metasBean.findAll}" id="tabela-mt" >
+
+                        <h:inputHidden value="#{mt.id}" />
+
+                        <p:column headerText="Ano"  style="text-align: center;" filterBy="#{mt.anoMetas}" filterMatchMode="contains">
+                            <h:outputText value="#{mt.anoMetas}" /> 
+                        </p:column>
+                         <p:column headerText="Metas Físicas" 
+                                  style="text-align: center;">
+                             <h:outputText value="#{mt.mtNome}"/> 
+                        </p:column>
+                         <p:column headerText="LVAD" 
+                                  style="text-align: center;">
+                             <h:outputText value="#{mt.lvad}"/> 
+                        </p:column>
+                         <p:column headerText="QNTD" 
+                                  style="text-align: center;">
+                             <h:outputText value="#{mt.qtd}"/> 
+                        </p:column>
+                         <p:column headerText="Retiradas" 
+                                  style="text-align: center;">
+                             <h:outputText value="#{mt.retiradas}"/> 
+                        </p:column>
+
+                        
+                        
+                 </p:dataTable>
+                <p:separator/>
+             </fieldset>
+             </fieldset>    
+        </h:form>
+
+    </ui:define>
+</ui:composition>

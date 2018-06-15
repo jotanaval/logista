@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<ui:define name="Titulo">Gerenciamento de Acesso Externo aos servidores</ui:define>
+	<ui:define name="corpo">
+             <h:form id="impressao">
+            <fieldset> <legend>Relatórios de Viaturas</legend>
+                       
+            <fieldset> <legend>Comando da Divisão Anfíbia</legend>
+                 <h5>Relatório detalhado  </h5>
+                <h:commandLink>
+                    <f:setPropertyActionListener target="#{relatorioBean.tipoRelatorio}" value="1"/>
+                    <p:fileDownload value="#{relatorioBean.arquivoretorno}"/>
+                    <h:graphicImage library="imagens" name="pdf.png" title="Imprimir PDF"/>
+                    
+                </h:commandLink><br/>
+                 
+                 </fieldset> 
+                
+                <fieldset> <legend>Batalhão Riachuelo</legend>
+                 <h5>Relatório</h5>
+                <h:commandLink>
+                    <f:setPropertyActionListener target="#{pribtiRelatorio.tipoRelatorio}" value="1"/>
+                    <p:fileDownload value="#{pribtiRelatorio.arquivoretorno}"/>
+                    <h:graphicImage library="imagens" name="pdf.png" title="Imprimir PDF"/>
+                    </h:commandLink> 
+                </fieldset>
+                <fieldset> <legend>Batalhão Humaita</legend>
+                 <h5>Relatório</h5>
+                <h:commandLink>
+                    <f:setPropertyActionListener target="#{segbtiRelatorio.tipoRelatorio}" value="1"/>
+                    <p:fileDownload value="#{segbtiRelatorio.arquivoretorno}"/>
+                    <h:graphicImage library="imagens" name="pdf.png" title="Imprimir PDF"/>
+                    </h:commandLink> 
+                </fieldset>
+                 
+             </fieldset>   
+            </h:form>
+	</ui:define>
+</ui:composition>

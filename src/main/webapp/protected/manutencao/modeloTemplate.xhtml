@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+   
+        
+<h:form id="frmMod">
+                        <fieldset><legend>Cadastrar de Modelo</legend>
+                            <h:outputLabel value="Modelo :"/>
+                            <h:inputText value="#{modeloBean.modelo.modelo}"/>
+                            
+                            <h:inputHidden value="#{modeloBean.modelo.id}" />
+                     
+                            <p:commandButton action="#{modeloBean.save()}" value="Salvar" update="tb frmMod" />                
+
+
+                        </fieldset>
+                        <fieldset><legend>Lista de Modelos</legend>
+
+                            <p:dataTable var="m" value="#{modeloBean.modelos}" id="tb" >
+                                
+                                <h:inputHidden value="#{m.id}" />
+                                                                                                              
+                                <p:column headerText="Modelo">
+                                    <h:outputText value="#{m.modelo}" />
+                                </p:column>
+                                
+                                <p:column width="40" style="text-align: center;" headerText="Alterar">
+                                     <h:commandLink actionListener="#{modeloBean.editar}">
+                                <h:graphicImage library="imagens" name="editar16.png"
+                                                style="border:0" />
+                                <f:setPropertyActionListener target="#{modeloBean.modelo}"
+                                                             value="#{m}" />
+                            </h:commandLink>
+                        </p:column>
+
+                                
+
+                                </p:dataTable>
+                        </fieldset>
+                    </h:form>
+                        
+</ui:composition>

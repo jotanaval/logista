@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Manutenções</ui:define>
+    <ui:define name="corpo">
+
+        <h:form id="fr">
+            <p:growl id="message"/>
+        <p:toolbar id="toolbar">
+        <f:facet name="left">            
+             <p:commandButton value="Novo" 
+                              action="#{itemBean.novoItem()}"
+                              oncomplete="PF('cadastro-dialog').show();" 
+                              icon="ui-icon-document"
+                              process="@this" 
+                              update="dialog-painel ">                 
+                 <p:resetInput target="fr:dialog-painel" />                          
+             </p:commandButton>   
+             
+             <span class="ui-separator">
+                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+            </span>               
+            <p:commandButton  title="Editar"
+                              process="@this"
+                              icon="ui-icon-pencil" 
+                              update="dialog-painel-alteracao"
+                              disabled="#{itemBean.itemSelecionado ==null}"
+                              oncomplete="PF('alteracao-dialog').show()" >                
+                <f:setPropertyActionListener 
+                                             value="#{itemBean.itemSelecionado}"
+                                             target="#{itemBean.item}" />                
+                     <p:resetInput target="fr:dialog-painel-alteracao" />   
+              </p:commandButton>                 
+                  <p:commandButton title="Excluir" icon="ui-icon-trash"
+                                   process="@this"
+                                   update="tab-item message toolbar"
+                                   action="#{itemBean.excluir()}"
+                                   disabled="#{itemBean.itemSelecionado ==null}" 
+                                   >
+                      <p:confirm icon="ui-icon-alert" 
+                                   header="Confirmação de Exclusão"
+                                   message="Tem certeza que deseja excluir Item ? "/>
+                      
+                      </p:commandButton>
+        </f:facet>
+            </p:toolbar>                                                                   
+                 <fieldset><legend>Administração de Manutenção</legend>          
+            <p:dataTable var="item" value="#{itemBean.itens}"  
+                         paginator="true" id="tab-item" 
+                         paginatorPosition="bottom"
+                         rows="10"
+                         selection="#{itemBean.itemSelecionado}"
+                         selectionMode="single"
+                         rowKey="#{item.id}">                         
+                <p:ajax event="rowSelect"  update=":fr:toolbar" />
+                 <p:ajax event="rowUnselect"  update=":fr:toolbar"/>
+                
+                 <p:column headerText=" Item" style="text-align: center; ">
+                     <p:outputLabel value="#{item.id}" />
+                </p:column>
+                
+                <p:column headerText=" Ano" filterBy="#{item.manutencao.ano}" filterMatchMode="contains"
+                          style="text-align: center; ">
+                    <p:outputLabel value="#{item.manutencao.ano}" />
+                </p:column>
+                
+                <p:column headerText=" CFN"    filterBy="#{item.manutencao.viatura.cfn}" filterMatchMode="contains"
+                          style="text-align: center; ">
+                    <p:outputLabel value="#{item.manutencao.viatura.cfn}" />
+                </p:column>
+                <p:column headerText=" OM" filterBy="#{item.manutencao.viatura.om}" filterMatchMode="contains"
+                          style="text-align: center; ">
+                    <p:outputLabel value="#{item.manutencao.viatura.om}" />
+                </p:column>
+                <p:column headerText=" Nome" filterBy="#{item.item}" filterMatchMode="contains"
+                          style="text-align: center; ">
+                    <p:outputLabel value="#{item.item}" />
+                </p:column>
+                <p:column headerText=" Preço" style="text-align: center; ">
+                    <p:outputLabel value="#{item.valor}" />
+                </p:column>                
+           </p:dataTable>
+                 </fieldset>
+            <p:dialog header="Cadastro de Item" 
+                             widgetVar="cadastro-dialog"  
+                             resizable="false" 
+                             closeOnEscape="true"
+                             id="dialog-painel">                
+                 <p:panelGrid columns="2" id="painel">                     
+                <p:outputLabel value="CFN da VTR"/>
+                <p:selectOneMenu value="#{itemBean.manutencaoID}" filter="true" filterMatchMode="startsWith">
+                    <f:selectItem itemLabel="Selecione o CFN" itemValue=""/>
+                    <f:selectItems value="#{manutencaoBean.findAll}" 
+                                           var="manutencao"
+                                           itemValue="#{manutencao.id}" 
+                                           itemLabel="#{manutencao.viatura.cfn}" />
+                </p:selectOneMenu>              
+              <p:outputLabel value="Item" for="o" />
+              <p:inputText id="o"   value="#{itemBean.item.item}" />             
+                <p:outputLabel value="Valor" for="v" />
+                <p:inputText id="v"   value="#{itemBean.item.valor}" />                
+            </p:panelGrid>
+                
+                <p:commandButton action="#{itemBean.manutencaoSalvarItem()}"   
+                                 value="Salvar"
+                                 process="dialog-painel"
+                                 update="message painel tab-item" 
+                                 oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"/>
+            </p:dialog>   
+            
+            <p:dialog header="Alteração de dados" 
+                             widgetVar="alteracao-dialog"  
+                             resizable="false" 
+                             closeOnEscape="true"
+                             id="dialog-painel-alteracao">                
+            <h:panelGrid columns="2" id="painel-alteracao">                     
+                            
+              <p:outputLabel value="Item" for="oa" />
+              <p:inputText id="oa"   value="#{itemBean.item.item}" />             
+                <p:outputLabel value="Valor" for="va" />
+                <p:inputText id="va"   value="#{itemBean.item.valor}" />                
+            </h:panelGrid>
+                <p:commandButton action="#{itemBean.manutencaoSalvarItem()}"   
+                                 value="Salvar"
+                                 process="dialog-painel-alteracao"
+                                 update="message painel-alteracao tab-item" 
+                                 oncomplete="if (!args.validationFailed) PF('alteracao-dialog').hide()"/>
+            </p:dialog>   
+       </h:form>   
+    </ui:define>
+</ui:composition>

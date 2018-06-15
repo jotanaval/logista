@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<ui:define name="Titulo">Gerenciamento de Acesso Externo aos servidores</ui:define>
+	<ui:define name="corpo">
+            
+            <h:form id="frmctec">
+                
+                 <p:toolbar rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}">
+                    <f:facet name="left">
+                        <p:commandLink value="Nova" action="/protected/addCtec.xhtml"  />
+                        
+                       
+                        
+                </f:facet>
+                    
+                </p:toolbar>
+                <p:separator/>
+              <fieldset><legend>Administração </legend>
+                     <fieldset><legend>Lista de Manutenções</legend>
+
+                <p:dataTable var="mn" value="#{ctecBean.ctecs}" id="tabela-vtr2"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
+
+                        <f:facet name="header">
+                            <div style="color: blue; font: bold;">Lista de Manutenções</div>
+                        </f:facet>
+
+
+                        <h:inputHidden value="#{mn.id}" />
+
+                        <p:column headerText="CFN" width="10"
+                                  style="text-align: center; ">
+                            <h:outputText value="#{mn.viatura.cfn}" />
+                        </p:column>
+                        <p:column headerText="Responsável" width="10" style="text-align: center; ">
+                            <h:outputText value="#{mn.responsavel}" />
+                        </p:column>
+                         <p:column headerText="OM" width="10" style="text-align: center; ">
+                             <h:outputText value="#{mn.viatura.om}" />
+                        </p:column>
+
+                        <p:column headerText="Parecer" width="80"
+                                  style="text-align: center; ">
+                            <h:outputText value="#{mn.parecer}" />
+                        </p:column>
+                        <p:column headerText="Custo" width="8" style="text-align: center; ">
+                            <h:outputText value="#{mn.orcamento}" />
+                        </p:column>
+                        <p:column headerText="Data Inspeção" width="8" style="text-align: center; ">
+                            <h:outputText value="#{mn.inspecao}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Inicio" width="8"
+                                  style="text-align: center;">
+                            <h:outputText value="#{mn.inicio}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Término " width="8"
+                                  style="text-align: center;">
+                            <h:outputText value="#{mn.termino}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                            </h:outputText>
+                        </p:column>
+                         <p:column headerText="Última Atualização" width="45"
+                                  style="text-align: center; color: red">
+                             <h:outputText value="#{mn.ultimaAtualizacao}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                             </h:outputText>
+                                || Usuário <h:outputText value="#{mn.modificador}"/>
+                        </p:column>
+                        <p:column headerText="Observação" width="60" style="text-align: center; ">
+                            <h:outputText value="#{mn.observacao}" />
+                        </p:column>
+
+                        <p:column width="5" style="text-align: center;">
+                            <h:commandLink action="#{ctecBean.editar}">
+                                <h:graphicImage library="imagens" name="editar16.png"
+                                                style="border:0" />
+                                <f:setPropertyActionListener target="#{ctecBean.ctec}"
+                                                             value="#{mn}" />
+                            </h:commandLink>
+                        </p:column>
+                        <p:column width="5" style="text-align: center;">
+                            <p:commandLink action="#{ctecBean.excluir}"
+                                           update="tabela-vtr2"
+                                           onclick="if (!confirm('Confirma a exclusão? #{ctec.viatura.cfn}?'))
+                                                       return false;">
+                                <h:graphicImage library="imagens" name="excluir16.png"
+                                                style="border:0" />
+                                <f:setPropertyActionListener target="#{ctecBean.ctec}"
+                                                             value="#{mn}" />
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </fieldset>
+
+        </fieldset> 
+        </h:form>
+
+		
+	</ui:define>
+</ui:composition>

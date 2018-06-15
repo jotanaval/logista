@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Viaturas</ui:define>
+    <ui:define name="corpo">
+       
+            <h:form id="fr">
+                <p:growl id="messages" />                
+           <p:toolbar id="toolbar">
+        <f:facet name="left">            
+             <p:commandButton value="Novo" 
+                              rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}"
+                              action="#{viaturaBean.novaViatura()}"
+                              oncomplete="PF('cadastro-dialog').show();" 
+                              icon="ui-icon-document"
+                              process="@this" 
+                              update="dialog-painel ">                 
+                <p:resetInput target="fr:dialog-painel" />                          
+             </p:commandButton>   
+             
+             <span class="ui-separator">
+                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+            </span>               
+            <p:commandButton  title="Editar"
+                              rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}"
+                              process="@this"
+                              icon="ui-icon-pencil" 
+                              update="dialog-painel-atualizar"
+                              disabled="#{viaturaBean.viaturaSelecionada ==null}"
+                              oncomplete="PF('atualizar-dialog').show()" >
+                
+                <f:setPropertyActionListener 
+                                             value="#{viaturaBean.viaturaSelecionada}"
+                                             target="#{viaturaBean.viatura}" />
+                
+                     <p:resetInput target="fr:dialog-painel-atualizar" />   
+              </p:commandButton>
+                 
+                  <p:commandButton title="Delete" 
+                                   rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}"
+                                   icon="ui-icon-trash"
+                                   action="#{viaturaBean.excluir()}"
+                                   process="@this"
+                                   update="tabela-vtr messages toolbar"
+                                   disabled="#{viaturaBean.viaturaSelecionada ==null}" >
+                  
+                  <p:confirm       icon="ui-icon-alert" 
+                                   header="Confirmação de Exclusão"
+                                   message="Tem certeza que deseja excluir viatura ? "/>
+                  </p:commandButton>
+                 
+                 <p:commandButton icon="ui-icon-arrowthick-1-s" 
+                                  ajax="false" 
+                                  immediate="true" 
+                                  title="Exportar para XLS">
+                     <p:dataExporter type="XLS" 
+                                     target="tabela-vtr" 
+                                     fileName="Viatura"/>
+                     
+                 </p:commandButton>
+                 <p:commandButton  title="EditarOM"
+                              rendered="#{request.isUserInRole('ROLE_USUARIO_VIP')}"
+                              process="@this"
+                              icon="ui-icon-pencil" 
+                              update="dialog-painel-atualizar1"
+                              disabled="#{viaturaBean.viaturaSelecionada ==null}"
+                              oncomplete="PF('atualizar1-dialog').show()" >
+                
+                <f:setPropertyActionListener 
+                                             value="#{viaturaBean.viaturaSelecionada}"
+                                             target="#{viaturaBean.viatura}" />
+                
+                     <p:resetInput target="fr:dialog-painel-atualizar1" />   
+              </p:commandButton>
+                 
+                  <span class="ui-separator"> <span
+                                class="ui-icon ui-icon-grip-dotted-vertical" />
+                        </span>
+                 
+                 <p:commandLink value="Relatórios"
+                                       action="/protected/relatorios/relatorios.xhtml"
+                                       rendered="#{request.isUserInRole('ROLE_USUARIO_VIP')}"/>
+                               
+        </f:facet>
+               <f:facet name="right">
+                   <p:commandLink 
+                       rendered="#{request.isUserInRole('ROLE_ADMINISTRADOR')}"
+                       value="Modelo" 
+                       action="/protected/modelos.xhtml" 
+                        />
+                   <span class="ui-separator">
+                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                   </span> 
+                   
+                    <p:commandLink value="Logout"
+                                                                     
+                                   onclick="document.location = '#{request.contextPath}/j_spring_security_logout'"
+                                   title="Sair" /> 
+               </f:facet>
+            </p:toolbar>
+                <p:separator/>
+         
+                
+                    <p:dataTable var="viatura" 
+                                 value="#{viaturaBean.findAllDefguranca}" 
+                                 id="tabela-vtr"
+                                 paginator="true"  
+                                 paginatorPosition="bottom"
+                                 rows="10"
+                                 selection="#{viaturaBean.viaturaSelecionada}"
+                                 selectionMode="single"
+                                 rowKey="#{viatura.id}">
+                        
+                        <p:ajax event="rowSelect"  update=":fr:toolbar" />
+                        <p:ajax event="rowUnselect"  update=":fr:toolbar"/>
+
+                        <f:facet name="header">
+                            <div style="color: blue; font: bold;">Lista de Viaturas</div>
+                        </f:facet>
+                        <h:inputHidden value="#{viatura.id}" />
+                        <p:column headerText="Modelo"  filterBy="#{viatura.modelo.modelo}" filterMatchMode="contains"
+                                  style="text-align: center; ">
+                            <h:outputText value="#{viatura.modelo.modelo}"  />
+                        </p:column>
+                        <p:column headerText="CFN"  style="text-align: center;" 
+                                  filterBy="#{viatura.cfn}" filterMatchMode="contains">
+                            <h:outputText value="#{viatura.cfn}" />
+                        </p:column>
+                        <p:column headerText="Ano Fabricação" filterBy="#{viatura.anoFabricacao}" filterMatchMode="contains">
+                            <h:outputText value="#{viatura.anoFabricacao}"/>
+                        </p:column>
+                        <p:column headerText="Chassi" filterBy="#{viatura.chassi}" filterMatchMode="contains">
+                            <h:outputText value="#{viatura.chassi}"/>
+                        </p:column>
+                        
+                        <p:column headerText="OM"  style="text-align: center;"
+                                  filterBy="#{viatura.om}" filterMatchMode="contains">
+                            <h:outputText value="#{viatura.om}" />
+                        </p:column>
+                        
+                        <p:column headerText="FER"  style="text-align: center; " 
+                                  filterBy="#{viatura.fer}" filterMatchMode="contains">
+                            <h:outputText value="#{viatura.fer}" />
+                        </p:column>
+                         <p:column headerText="Disponibilidade"  style="text-align: center; " 
+                                   filterBy="#{viatura.situacao}" filterMatchMode="contains">
+                             <h:outputText value="#{viatura.situacao}" />
+                        </p:column>
+                        <p:column headerText="Situação"  filterBy="#{viatura.escalacao}" filterMatchMode="contains"
+                                  style="text-align: center; ">
+                            <h:outputText value="#{viatura.escalacao}" />
+                        </p:column>
+                        <p:column headerText="Última atualização" 
+                                  style="text-align: center; color: crimson">
+                            <h:outputText value="#{viatura.ultimaAtualizacao}">
+                                <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                            </h:outputText>
+                         || Usuário :   <h:outputText value="#{viatura.modificador}"/>
+                        </p:column>                      
+                    </p:dataTable>
+               
+                   <p:dialog header="Cadastro" 
+                             widgetVar="cadastro-dialog"  
+                             resizable="false" 
+                             closeOnEscape="true"
+                             id="dialog-painel">
+                     
+                     <p:panelGrid columns="2" id="painel">
+                        <p:outputLabel value="CFN :"/>
+                        <p:inputText value="#{viaturaBean.viatura.cfn}"/>
+                       <h:outputLabel value="Moldelo"/>
+                        <p:selectOneMenu value="#{viaturaBean.modeloID}">
+                            <f:selectItems value="#{modeloBean.modelos}" var="modelo" itemValue="#{modelo.id}" itemLabel="#{modelo.modelo}"/>
+                        </p:selectOneMenu>
+                       <p:outputLabel value="Ano de fabricação"/>
+                       <p:inputMask value="#{viaturaBean.viatura.anoFabricacao}" mask = "9999" />
+                       
+                       <p:outputLabel value="Chassi"/>
+                       <h:inputText value="#{viaturaBean.viatura.chassi}" />
+                       
+                       
+                        <p:outputLabel value="OM: " for="om" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.om}" id="om">
+                            <f:selectItem itemValue="DivAnf" itemLabel="DivAnf" />
+                            <f:selectItem itemValue="BFNIG" itemLabel="BFNIG" />                          
+                            <f:selectItem itemValue="1ºBTL" itemLabel="1ºBTL" />
+                            <f:selectItem itemValue="2ºBTL" itemLabel="2ºBTL" />
+                            <f:selectItem itemValue="3ºBTL" itemLabel="3ºBTL" />
+                            <f:selectItem itemValue="BTLART" itemLabel="BTLART" />
+                            <f:selectItem itemValue="BATDAA" itemLabel="BATDAA" />
+                            <f:selectItem itemValue="BTLCMC" itemLabel="BTLCMC" />
+                            <f:selectItem itemValue="BATBLI" itemLabel="BATBLI" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Disponibilidade" for="sit" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.situacao}" id="sit">
+                            <f:selectItem itemValue="Disponivel" itemLabel="Disponivel" />
+                            <f:selectItem itemValue="Indisponivel" itemLabel="Indisponivel" />
+                            
+                        </p:selectOneMenu>                        
+                        <p:outputLabel value="Siatuação: " for="esc" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.escalacao}" id="esc">
+                            <f:selectItem itemValue="Nenhuma" itemLabel="Nenhuma" />
+                            <f:selectItem itemValue="UAnf" itemLabel="UAnf" />
+                            <f:selectItem itemValue="Manobra" itemLabel="Manobra" />
+                            <f:selectItem itemValue="Emprestimo" itemLabel="Emprestimo" />
+                            <f:selectItem itemValue="Exterior" itemLabel="Exterior" />
+                            <f:selectItem itemValue="LVAD" itemLabel="LVAD" />
+                            <f:selectItem itemValue="Progem" itemLabel="Progem" />
+                            <f:selectItem itemValue="CTec" itemLabel="CTec" />
+                            
+                        </p:selectOneMenu>
+                        <p:outputLabel value="FER: " for="fer" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.fer}" id="fer">
+                            <f:selectItem itemValue="sim" itemLabel="sim" />
+                            <f:selectItem itemValue="não" itemLabel="não" />
+                        </p:selectOneMenu>
+                        <h:inputHidden value="#{viaturaBean.viatura.id}" />
+                    </p:panelGrid>                    
+                  <p:commandButton   action="#{viaturaBean.save()}"   
+                                     value="Salvar"
+                                     process="dialog-painel"
+                                     update="messages painel tabela-vtr" 
+                                     oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"/>
+                
+            </p:dialog>
+                <p:dialog header="Atualizar" 
+                             widgetVar="atualizar-dialog"  
+                             resizable="false" 
+                             closeOnEscape="true"
+                             id="dialog-painel-atualizar">                     
+                     <p:panelGrid columns="2" id="painela">
+                        <p:outputLabel value="CFN :"/>
+                        <p:inputText value="#{viaturaBean.viatura.cfn}"/>
+                         <p:outputLabel value="Ano de fabricação"/>
+                       <h:inputText value="#{viaturaBean.viatura.anoFabricacao}" />
+                       
+                       <p:outputLabel value="Chassi"/>
+                       <h:inputText value="#{viaturaBean.viatura.chassi}" />
+                        <p:outputLabel value="OM: " for="om" />
+                        
+                        <p:selectOneMenu value="#{viaturaBean.viatura.om}" id="oma">
+                            <f:selectItem itemValue="DivAnf" itemLabel="DivAnf" />
+                            <f:selectItem itemValue="CDD" itemLabel="CDD" />
+                            <f:selectItem itemValue="CIASC" itemLabel="CIASC" />
+                            <f:selectItem itemValue="BFNIG" itemLabel="BFNIG" />
+                            <f:selectItem itemValue="CMM" itemLabel="CMM" />
+                            <f:selectItem itemValue="1ºBTL" itemLabel="1ºBTL" />
+                            <f:selectItem itemValue="2ºBTL" itemLabel="2ºBTL" />
+                            <f:selectItem itemValue="3ºBTL" itemLabel="3ºBTL" />
+                            <f:selectItem itemValue="BTLART" itemLabel="BTLART" />
+                            <f:selectItem itemValue="BATDAA" itemLabel="BATDAA" />
+                            <f:selectItem itemValue="BTLCMC" itemLabel="BTLCMC" />
+                            <f:selectItem itemValue="BATBLI" itemLabel="BATBLI" />
+                        </p:selectOneMenu>                        
+                        <p:outputLabel value="Disponibilidade" for="sit" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.situacao}" id="sita">
+                            <f:selectItem itemValue="Disponivel" itemLabel="Disponivel" />
+                            <f:selectItem itemValue="Indisponivel" itemLabel="Indisponivel" />
+                                                       
+                        </p:selectOneMenu>                        
+                        <p:outputLabel value="Situação: " for="esc" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.escalacao}" id="esca">
+                            <f:selectItem itemValue="Nenhuma" itemLabel="Nenhuma" />
+                            <f:selectItem itemValue="UAnf" itemLabel="UAnf" />
+                            <f:selectItem itemValue="Manobra" itemLabel="Manobra" />
+                            <f:selectItem itemValue="Emprestimo" itemLabel="Emprestimo" />
+                            <f:selectItem itemValue="Exterior" itemLabel="Exterior" />
+                            <f:selectItem itemValue="LVAD" itemLabel="LVAD" /> 
+                            <f:selectItem itemValue="Progem" itemLabel="Progem" /> 
+                            <f:selectItem itemValue="CTec" itemLabel="CTec" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="FER: " for="fer" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.fer}" id="fera">
+                            <f:selectItem itemValue="sim" itemLabel="sim" />
+                            <f:selectItem itemValue="não" itemLabel="não" />
+                        </p:selectOneMenu>
+                        <h:inputHidden value="#{viaturaBean.viatura.id}" />
+                    </p:panelGrid>                           
+                      <p:commandButton   action="#{viaturaBean.save()}"   
+                                         value="Atualizar"
+                                         process="dialog-painel-atualizar"
+                                         update="messages painel tabela-vtr" 
+                                         oncomplete="if (!args.validationFailed) PF('atualizar-dialog').hide()"/>
+                
+            </p:dialog>
+                <p:dialog header="Atualizar" 
+                             widgetVar="atualizar1-dialog"  
+                             resizable="false" 
+                             closeOnEscape="true"
+                             id="dialog-painel-atualizar1">                     
+                     <p:panelGrid columns="2" id="painela1">
+                        
+                       <h:inputHidden value="#{viaturaBean.viatura.cfn}"/>                        
+                       <h:inputHidden  value="#{viaturaBean.viatura.anoFabricacao}" />                         
+                       <h:inputHidden  value="#{viaturaBean.viatura.chassi}" />
+                       
+                        
+                         <h:inputHidden  value="#{viaturaBean.viatura.om}" />
+                                                 
+                        <p:outputLabel value="Disponibilidade" for="s" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.situacao}" id="s">
+                            <f:selectItem itemValue="Disponivel" itemLabel="Disponivel" />
+                            <f:selectItem itemValue="Indisponivel" itemLabel="Indisponivel" />
+                                                       
+                        </p:selectOneMenu>                        
+                        <p:outputLabel value="Situação: " for="e" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.escalacao}" id="e">
+                            <f:selectItem itemValue="Nenhuma" itemLabel="Nenhuma" />
+                            <f:selectItem itemValue="UAnf" itemLabel="UAnf" />
+                            <f:selectItem itemValue="Manobra" itemLabel="Manobra" />
+                            <f:selectItem itemValue="Emprestimo" itemLabel="Emprestimo" />
+                            <f:selectItem itemValue="Exterior" itemLabel="Exterior" />
+                            <f:selectItem itemValue="LVAD" itemLabel="LVAD" /> 
+                            <f:selectItem itemValue="Progem" itemLabel="Progem" /> 
+                            <f:selectItem itemValue="CTec" itemLabel="CTec" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="FER: " for="f" />
+                        <p:selectOneMenu value="#{viaturaBean.viatura.fer}" id="f">
+                            <f:selectItem itemValue="sim" itemLabel="sim" />
+                            <f:selectItem itemValue="não" itemLabel="não" />
+                        </p:selectOneMenu>
+                        <h:inputHidden value="#{viaturaBean.viatura.id}" />
+                    </p:panelGrid>                           
+                      <p:commandButton   action="#{viaturaBean.save()}"   
+                                         value="Atualizar"
+                                         process="dialog-painel-atualizar1"
+                                         update="messages painel tabela-vtr" 
+                                         oncomplete="if (!args.validationFailed) PF('atualizar1-dialog').hide()"/>
+                
+            </p:dialog>
+            </h:form>
+        
+    </ui:define>
+</ui:composition>

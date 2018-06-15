@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">       
+
+   
+            <fieldset><legend>Cadastro</legend>
+                <h:panelGrid columns="2" id="painel" >
+                
+                <p:outputLabel value="Ano" for="o" />
+                <p:inputMask id="ano"  value="#{manutencaoBean.manutencao.ano}" mask = "9999"/>
+                
+             <h:outputLabel value="CFN da VTR"/>
+                <p:selectOneMenu value="#{manutencaoBean.viaturaID}"  filter="true" filterMatchMode="startsWith">
+                     <f:selectItem itemLabel="Selecione o CFN" itemValue=""/>
+                    <f:selectItems value="#{viaturaBean.ordenadas}" var="viatura" itemValue="#{viatura.id}" itemLabel="#{viatura.cfn}"/>
+                </p:selectOneMenu>            
+             
+             <p:outputLabel value="nº do PS"/>
+             <p:inputText value="#{manutencaoBean.manutencao.NPS}" />
+             <p:outputLabel value="PM"/>
+             <p:selectOneMenu value="#{manutencaoBean.manutencao.pm}">
+                 <f:selectItem itemValue="PMI" itemLabel="PMI" />
+                 <f:selectItem itemValue="PMG" itemLabel="PMG" />
+                 <f:selectItem itemValue="PME" itemLabel="PME" />
+             </p:selectOneMenu>
+             <p:outputLabel value="Mês"/>
+             <p:selectOneMenu value="#{manutencaoBean.manutencao.mes}">
+                 <f:selectItem itemValue="JAN" itemLabel="JAN" />
+                 <f:selectItem itemValue="FEV" itemLabel="FEV" />
+                 <f:selectItem itemValue="MAR" itemLabel="MAR" />
+                 <f:selectItem itemValue="ABR" itemLabel="ABR" />
+                 <f:selectItem itemValue="MAI" itemLabel="MAI" />
+                 <f:selectItem itemValue="JUN" itemLabel="JUN" />
+                 <f:selectItem itemValue="JUL" itemLabel="JUL" />
+                 <f:selectItem itemValue="AGO" itemLabel="AGO" />
+                 <f:selectItem itemValue="SET" itemLabel="SET" />
+                 <f:selectItem itemValue="OUT" itemLabel="OUT" />
+                 <f:selectItem itemValue="NOV" itemLabel="NOV" />
+                 <f:selectItem itemValue="DEZ" itemLabel="DEZ" />
+                 
+             </p:selectOneMenu>
+             
+                <p:outputLabel value="Orçamento" for="o" />
+                <p:inputText id="o" 
+                             value="#{manutencaoBean.manutencao.orcamento}" />
+
+                <p:outputLabel value="Apresentação" />
+                <p:calendar id="dataInicio"
+                            value="#{manutencaoBean.manutencao.apresentacao}"
+                            pattern="dd/MM/yyyy" />
+
+                <p:outputLabel value="Prontificação" />
+                <p:calendar id="dataTermino"
+                            value="#{manutencaoBean.manutencao.dataPrintificacao}"
+                            pattern="dd/MM/yyyy" />
+                
+                <p:outputLabel value="Satisfeito" for="s" />
+                <p:inputText id="s" 
+                             value="#{manutencaoBean.manutencao.satisfeito}" />
+                
+                <p:outputLabel value="Garantia" />
+                <p:calendar id="dataGarantia"
+                            value="#{manutencaoBean.manutencao.garantia}"
+                            pattern="dd/MM/yyyy" />
+                
+                <p:outputLabel value="Observação" for="ob" />
+                <p:inputTextarea id="ob"  
+                                 value="#{manutencaoBean.manutencao.observacao}" 
+                                 autoResize="true" 
+                                 cols="40"/>
+                
+                      <p:commandButton action="#{manutencaoBean.save()}"   
+                                       value="Salvar"
+                                       process="@this dialog painel"
+                                       oncomplete="if (!args.validationFailed) PF('cadastro-dialog').hide()"/> 
+                 </h:panelGrid>
+                     
+                   
+             </fieldset>
+                 
+                        
+</ui:composition>

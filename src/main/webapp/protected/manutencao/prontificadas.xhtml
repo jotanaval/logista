@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<ui:composition template="/templates/interna.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="Titulo">Gerenciamento de Manutenções</ui:define>
+    <ui:define name="corpo">
+
+
+        <h:form id="frmManu">
+            <p:growl id="pgrowl"/>
+            <ui:insert>
+                <ui:include src="/protected/manutencao/menuTemplate.xhtml"/>
+            </ui:insert>
+           
+            <fieldset><legend>Administração de Manutenção</legend>
+
+                <fieldset><legend style="color: red">Viaturas Prontificadas </legend>
+
+                    <p:dataTable var="mn" value="#{manutencaoBean.prontificadas}" id="tabela-vtr"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
+
+                        <h:inputHidden value="#{mn.id}" />
+
+                        <p:column headerText="Ano"  style="text-align: center;" filterBy="#{mn.ano}" filterMatchMode="contains">
+                            <h:outputText value="#{mn.ano}"> <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" /></h:outputText>
+                        </p:column>
+
+                        <p:column headerText="CFN"   style="text-align: center; font-style: oblique " filterBy="#{mn.viatura.cfn}" filterMatchMode="contains">
+                            <h:outputText value="#{mn.viatura.cfn}" />
+                         </p:column>
+                         <p:column headerText="Modelo"   style="text-align: center; font-style: oblique " filterBy="#{mn.viatura.modelo.modelo}" filterMatchMode="contains">
+                             <h:outputText value="#{mn.viatura.modelo.modelo}" />
+                          </p:column>
+                        <p:column headerText="OM" filterBy="#{mn.viatura.om}" filterMatchMode="contains"> 
+                            <h:outputText value="#{mn.viatura.om}" />
+                        </p:column>
+
+                        <p:column headerText="Orçamento">
+                            <h:outputText value="#{mn.orcamento}" />
+                        </p:column>
+
+
+                        <p:column headerText="Apresentação" 
+                                  style="text-align: center;">
+                            <h:outputText value="#{mn.apresentacao}"> <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" /></h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Prontificação">
+                            <h:outputText value="#{mn.dataPrintificacao}"> <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />  </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Garantia"  
+                                  style="text-align: center; color: blue">
+                            <h:outputText value="#{mn.garantia}">  <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" /> </h:outputText>
+
+                        </p:column>
+                        <p:column headerText="Satisfeito">
+                            <h:outputText value="#{mn.satisfeito}" />
+                        </p:column>
+                        
+                        <p:column headerText="Última modificação"  style="text-align: center; " width="150" >
+                             Nome :   <h:outputText value="#{mn.atualizador}" />
+                             <p:separator/>
+                             Data : <h:outputText value="#{mn.ultimaAtualizacao}" > <f:convertDateTime pattern="dd-MM-yyyy" locale="pt" />
+                             </h:outputText>
+                             
+                             </p:column>
+
+                        <p:column headerText="Observação"  style="text-align: center; ">
+                            <h:outputText value="#{mn.observacao}" />
+                        </p:column>
+                        
+                        <p:column width="8" style="text-align: center;">
+                            <h:commandLink action="#{manutencaoBean.editar()}">
+                                <h:graphicImage library="imagens" name="editar16.png"
+                                                style="border:0" />
+                                <f:setPropertyActionListener target="#{manutencaoBean.manutencao}"
+                                                             value="#{mn}" />
+
+                            </h:commandLink>
+                        </p:column>
+                        <p:column width="8" style="text-align: center;">
+                            <p:commandLink action="#{manutencaoBean.excluir}"
+                                           update="tabela-vtr"
+                                           onclick="if (!confirm('Confirma a exclusão? #{mautencao.cfn}?'))
+                                                       return false;">
+                                <h:graphicImage library="imagens" name="excluir16.png"
+                                                style="border:0" />
+                                <f:setPropertyActionListener target="#{manutencaoBean.manutencao}"
+                                                             value="#{mn}" />
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </fieldset>
+
+            </fieldset> 
+        </h:form>
+
+    </ui:define>
+</ui:composition>
